@@ -1,83 +1,212 @@
-import React, { useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  makeStyles,
+  IconButton,
+  Drawer,
+  Link,
+  MenuItem,
+} from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import { useState, useEffect } from "react";
 import './navbar.css';
-import Logo from '../../logo.svg';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
-import Link from '@material-ui/core/Link';
+import { Link as RouterLink } from "react-router-dom";
+import Logo from '../../assets/img/LOGO.png';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    toolbar: {
-      color:'white',
-      backgroundColor:'#000000'
-    },
-  }),
-);
 
-const Navbar = () => {
-  const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
-  const [scrolled, setScrolled] = React.useState(false);
-  const classes = useStyles();
-  const handleScroll = () => {
-    const offset = window.scrollY;
-    if (offset > 200) {
-      setScrolled(true);
-    }
-    else {
-      setScrolled(false);
-    }
+const headersData = [
+  {
+    label: "דף הבית",
+    href: "/listings",
+    side: "right",
+    key: "home"
+  },
+  {
+    label: "שינוי תור",
+    href: "/setbook",
+    side: "right",
+    key: "changeBook"
+  },
+  {
+    label: "גלריה",
+    href: "/account",
+    side: "left",
+    key: "gallery"
+  },
+  {
+    label: "מועדון",
+    href: "/logout",
+    side: "left",
+    key: "club"
+  },
+];
+const divStyle = {
+  display: 'inline'
+};
+const useStyles = makeStyles(() => ({
+  header: {
+    backgroundColor: "white",
+    position: "sticky",
+    color: "rgba(0,0,0,.5)",
+    direction: 'rtl',
+    paddingRight: "79px",
+    paddingLeft: "118px",
+    "@media (max-width: 900px)": {
+      paddingLeft: 0,
+    },
+  },
+  logo: {
+    width: 150,
+    textAlign: "center",
+  },
+  toolbar: {
+    position: "sticky",
+    justifyContent: "space-between",
+  },
+  drawerContainer: {
+    padding: "20px 30px",
+  },
+  drawerPaper: {
+    width: 240
   }
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-  })
+}));
 
-  let x = ['navbar'];
-  if (scrolled) {
-    x.push('scrolled');
+export default function Navbar() {
+  const { header, logo, toolbar, drawerContainer, drawerPaper } = useStyles();
+
+  const [state, setState] = useState({
+    mobileView: false,
+    drawerOpen: false,
+  });
+
+  const { mobileView, drawerOpen } = state;
+
+  useEffect(() => {
+    const setResponsiveness = () => {
+      return window.innerWidth < 1000
+        ? setState((prevState) => ({ ...prevState, mobileView: true }))
+        : setState((prevState) => ({ ...prevState, mobileView: false }));
+    };
+    setResponsiveness();
+    window.addEventListener("resize", () => setResponsiveness());
+    return () => {
+      window.removeEventListener("resize", () => setResponsiveness());
+    };
+  }, []);
+
+  const displayDesktop = () => {
+    return (
+      <Toolbar className={toolbar}>
+        {getMenuButtons2()}
+      </Toolbar>
+    );
+  };
+
+  const displayMobile = () => {
+    const handleDrawerOpen = () =>
+      setState((prevState) => ({ ...prevState, drawerOpen: true }));
+    const handleDrawerClose = () =>
+      setState((prevState) => ({ ...prevState, drawerOpen: false }));
+
+    return (
+      <Toolbar>
+        <IconButton
+          {...{
+            edge: "end",
+            color: "inherit",
+            "aria-label": "menu",
+            "aria-haspopup": "true",
+            onClick: handleDrawerOpen,
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
+
+        <Drawer
+          open={drawerOpen}
+          onClose={handleDrawerClose}
+          anchor='right'
+          variant="temporary"
+          classes={{
+            paper: drawerPaper,
+          }}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+        >
+          <div className={drawerContainer}>{getDrawerChoices()}</div>
+        </Drawer>
+
+        <div>{femmecubatorLogo}</div>
+      </Toolbar >
+    );
+  };
+
+  const getDrawerChoices = () => {
+    return headersData.map(({ label, href }) => {
+      return (
+        <Link
+          {...{
+            component: RouterLink,
+            dir: "rtl",
+            to: href,
+            color: "inherit",
+            style: { textDecoration: "none" },
+            key: label,
+          }}
+        >
+          <MenuItem>{label}</MenuItem>
+        </Link>
+      );
+    });
+  };
+
+  const femmecubatorLogo = (
+    <Typography variant="h6" component="h1" className={logo}>
+      <div className="logo">
+        <img src={Logo} alt="Logo" title="Logo" />
+      </div>
+    </Typography>
+  );
+
+  const getMenuButtons2 = () => {
+    return (
+      <nav className="navigation transparent-navbar sticky">
+        <ul className="navBarRight">
+          {getRightMenu()}
+        </ul>
+        {femmecubatorLogo}
+        <ul className="navBarLeft" >
+          {getLeftMenu()}
+        </ul>
+      </nav >
+    );
+  };
+
+  const getRightMenu = () => {
+    return headersData.map(({ label, href, side, key }) => {
+      return (
+        <div key={key} style={side === 'right' ? divStyle : { display: 'none' }}>
+          {side === "right" &&
+            <li key={key} className="nav-item" ><RouterLink key={key} to={href} className="nav-link">{label}</RouterLink></li>
+          }
+        </div>
+      );
+    });
+  }
+  const getLeftMenu = () => {
+    return headersData.map(({ label, href, side, key }) => {
+      return (
+        <div key={key} style={side === 'left' ? divStyle : { display: 'none' }}>
+          <li key={key} className="nav-item"><RouterLink key={key} to={href} className="nav-link">{label}</RouterLink></li>
+        </div>
+      );
+    });
   }
   return (
-    <AppBar position="static">
-  <Toolbar className={classes.toolbar}>
-    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-      <MenuIcon />
-    </IconButton>
-    <Typography variant="h6">
-    <Link href="#" onClick={preventDefault} color="inherit">
-    {'color="inherit"'}
-  </Link>
-    </Typography>
-  </Toolbar>
-</AppBar>
-    // <header className={x.join(" ")} dir="rtl">
-    //   <nav className="navigation transparent-navbar sticky">
-    //     <ul className="navBarRight">
-    //       <li className="nav-item" ><a className="nav-link" href="#post1">דף הבית</a></li>
-    //       <li className="nav-item"><a  className="nav-link"href="#post2">שינוי תור</a></li>
-    //     </ul>
-    //     <div className="logo">
-    //       <img src={Logo} alt="Logo" title="Logo" />
-    //     </div>
-    //     <ul className="navBarLeft">
-    //     <li className="nav-item">
-    //       <a className="nav-link" href="#post1">גלריה</a>
-    //       </li>
-    //       <li className="nav-item"><a className="nav-link" href="#post2">מועדון</a></li>
-    //     </ul>
-    //   </nav>
-
-    // </header>
-    
-  )
-};
-
-export default Navbar;
+    <AppBar className={header}>
+      {mobileView ? displayMobile() : displayDesktop()}
+    </AppBar>
+  );
+}

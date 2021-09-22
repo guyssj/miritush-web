@@ -159,7 +159,6 @@ overflow: hidden;
 }
 .logo img {
   width: 140px;
-  display: flex;
 align-items: center;
 margin: auto;
 }

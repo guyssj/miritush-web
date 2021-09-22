@@ -3,13 +3,24 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import './assets/slick-carousel/slick/slick.css'; 
+import './assets/slick-carousel/slick/slick.css';
 import './assets/slick-carousel/slick/slick-theme.css';
+import {
+  BrowserRouter as Router, Route, Switch,
+} from "react-router-dom";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Router>
     <App />
-  </React.StrictMode>,
+    <Switch>
+      <Route path="/setbook" />
+      <Route path="/users">
+      </Route>
+      <Route path="/">
+
+      </Route>
+    </Switch>
+  </Router>,
   document.getElementById('root')
 );
 
