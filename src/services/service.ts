@@ -1,16 +1,29 @@
-import axios from 'axios';
-import config from '../assets/config.json'
-import { APIResponse } from '../types/api-response';
+import httpClient from '../helpers/httpClient';
 import { Service } from '../types/services';
+import { ServiceType } from '../types/serviceTypes';
 
 export function ServiceService() {
 
     return {
-        list
+        list,
+        listServiceTypeBySrvId,
+        getServiceTypeById,
+        listServiceTypes
     }
-
 }
 
 function list() {
-    return axios.get<APIResponse<Service[]>>(`${config.baseUrl}api/Service/GetAll`);
+    return httpClient.get<Service[]>(`/Services`);
+}
+
+function listServiceTypeBySrvId(serviceId: number) {
+    return httpClient.get<ServiceType[]>(`/servicetypes/service/${serviceId}`);
+}
+
+function listServiceTypes() {
+    return httpClient.get<ServiceType[]>(`/servicetypes`);
+}
+
+function getServiceTypeById(serviceTypeId: number) {
+    return httpClient.get<ServiceType>(`/servicetypes/${serviceTypeId}`);
 }

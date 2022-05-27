@@ -8,10 +8,13 @@ import './assets/slick-carousel/slick/slick-theme.css';
 import {
   BrowserRouter as Router, Route, Switch,
 } from "react-router-dom";
+import { LabelProvider } from './components/labelContext/labelContext';
 
 ReactDOM.render(
   <Router>
-    <App />
+    <LabelProvider>
+      <App />
+    </LabelProvider>
     <Switch>
       <Route path="/setbook" />
       <Route path="/users">

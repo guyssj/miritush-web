@@ -2,20 +2,33 @@ import React from 'react';
 import './App.css';
 import Navbar from './components/NavBar/navbar';
 import SliderBook from './components/sliderBook/sliderbook';
-import { StylesProvider, jssPreset } from '@material-ui/core/styles';
-import rtl from "jss-rtl";
-import { create } from 'jss';
-const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
+import rtlPlugin from 'stylis-plugin-rtl';
+import { CacheProvider, ThemeProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import { prefixer } from 'stylis';
+import { createTheme } from '@mui/material/styles';
+import { sharedThemeOptions } from './theme/shareTheme';
 
+// Create rtl cache
+const cacheRtl = createCache({
+  key: 'muirtl',
+  stylisPlugins: [prefixer, rtlPlugin],
+});
+
+const theme = createTheme({
+  direction: 'rtl',
+  ...sharedThemeOptions
+});
 function App() {
   return (
-    <StylesProvider jss={jss}>
-      <React.Fragment>
-        <Navbar />
-        <SliderBook />
-      </React.Fragment>
-    </StylesProvider>
-
+    <CacheProvider value={cacheRtl}>
+      <ThemeProvider theme={theme}>
+        <React.Fragment>
+          <Navbar />
+          <SliderBook />
+        </React.Fragment>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 

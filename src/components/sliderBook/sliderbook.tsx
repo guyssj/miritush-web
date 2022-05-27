@@ -1,17 +1,11 @@
-import React, { useState } from 'react'
-import Button from '@material-ui/core/Button';
+import { useState } from 'react'
 import Slider from "react-slick";
 import handssmall from "../../assets/img/handsSmall.png";
 import legsSmall from "../../assets/img/legsSmall.png";
 import backRTL from "../../assets/img/backRTL.png";
-import {
-    createStyles,
-    createTheme,
-    makeStyles,
-    Theme,
-    ThemeProvider
-} from '@material-ui/core/styles';
 import FormDialog from '../../dialogs/formDialog';
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 
 export default function SliderBook() {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,27 +14,20 @@ export default function SliderBook() {
         setIsOpen(!isOpen);
     };
 
+    const BookButton = styled(Button)(({ theme }) => ({
+        height: '50px',
+        textAlign: 'center',
+        padding: '13px',
+        border: '1px solid black'
+    }));
 
-    const useStyles = makeStyles((theme: Theme) =>
-        createStyles({
-            margin: {
-                margin: theme.spacing(1)
-            },
-            buttonBook: {
-                height: '50px',
-                textAlign: 'center',
-                padding: '13px',
-                border: '1px solid black'
-            },
-            sliderBackground: {
-                backgroundImage: `url(${backRTL})`,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center center',
-                backgroundAttachment: 'fixed'
-            }
-        }),
-    );
+    const SliderStyled = styled('div')(({ theme }) => ({
+        backgroundImage: `url(${backRTL})`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        backgroundAttachment: 'fixed'
+    }));
 
     var settings = {
         dots: true,
@@ -51,35 +38,26 @@ export default function SliderBook() {
         slidesToScroll: 1,
         dir: 'rtl'
     };
-    const classes = useStyles();
     var slides = [
         { text: "להיות שונה עם עיצוב הציפורניים בהתאמה אישית", img: handssmall, desc: "מספקת מגוון רחב של שירותי עיצוב ציפורניים עברוך", key: "one" },
         { text: "טיפוח אישי באווירה אחרת, עם מוזיקה מעולה, והמון אהבה", img: legsSmall, desc: "מספקת מגוון רחב של שירותי עיצוב ציפורניים עברוך", key: "two" },
 
     ];
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#ffd8cb'
-            }
-        },
-    });
+
     const sliderItems = slides.map((slide) =>
-        <div key={slide.key} className={`fadeIn ${classes.sliderBackground}`}>
+        <SliderStyled key={slide.key} className={`fadeIn`}>
             <div dir="rtl" className="headText">
                 <h1 className="sliderText">
                     {slide.text}
                     <div className="hrLine slide-left " />
                 </h1>
-                <ThemeProvider theme={theme}>
-                    <Button variant="contained" color="primary" onClick={() => handleOpen()} className={classes.buttonBook}>
-                        קביעת פגישה
-                    </Button>
-                </ThemeProvider>
+                <BookButton variant="contained" color="primary" onClick={() => handleOpen()}>
+                    קביעת פגישה
+                </BookButton>
 
             </div>
             <img src={(slide.img)} alt="" />
-        </div>
+        </SliderStyled>
     );
     return (
         <div>

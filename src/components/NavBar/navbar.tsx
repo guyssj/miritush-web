@@ -1,18 +1,16 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  makeStyles,
-  IconButton,
-  Drawer,
-  Link,
-  MenuItem,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import { useState, useEffect } from "react";
 import './navbar.css';
 import { Link as RouterLink } from "react-router-dom";
 import Logo from '../../assets/img/LOGO.png';
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Drawer from "@mui/material/Drawer";
+import Link from "@mui/material/Link";
+import MenuItem from "@mui/material/MenuItem";
+import Typography from "@mui/material/Typography";
+import AppBar from "@mui/material/AppBar";
+import MenuIcon from '@mui/icons-material/Menu';
+import { styled } from '@mui/material/styles'
 
 
 const headersData = [
@@ -44,37 +42,35 @@ const headersData = [
 const divStyle = {
   display: 'inline'
 };
-const useStyles = makeStyles(() => ({
-  header: {
-    backgroundColor: "white",
-    position: "sticky",
-    color: "rgba(0,0,0,.5)",
-    direction: 'rtl',
-    paddingRight: "79px",
-    paddingLeft: "118px",
-    "@media (max-width: 900px)": {
-      paddingLeft: 0,
-    },
-  },
-  logo: {
-    width: 150,
-    textAlign: "center",
-  },
-  toolbar: {
-    position: "sticky",
-    justifyContent: "space-between",
-  },
-  drawerContainer: {
-    padding: "20px 30px",
-  },
-  drawerPaper: {
-    width: 240
+
+const HeaderStyled = styled(AppBar)(({ theme }) => ({
+  backgroundColor: "white",
+  position: "sticky",
+  color: "rgba(0,0,0,.5)",
+  direction: 'rtl',
+  paddingRight: "79px",
+  paddingLeft: "118px",
+  "@media (max-width: 900px)": {
+    paddingLeft: 0,
   }
 }));
 
-export default function Navbar() {
-  const { header, logo, toolbar, drawerContainer, drawerPaper } = useStyles();
+const LogoStyled = styled(Typography)(({ theme }) => ({
+  width: 150,
+  textAlign: "center",
+})) as typeof Typography;
 
+const ToolBarStyled = styled(Toolbar)(({ theme }) => ({
+  position: "sticky",
+  justifyContent: "space-between",
+}));
+
+const DrawerContainer = styled('div')(({ theme }) => ({
+  padding: "20px 30px"
+}))
+const drawerWidth = 240;
+
+export default function Navbar() {
   const [state, setState] = useState({
     mobileView: false,
     drawerOpen: false,
@@ -97,9 +93,9 @@ export default function Navbar() {
 
   const displayDesktop = () => {
     return (
-      <Toolbar className={toolbar}>
+      <ToolBarStyled>
         {getMenuButtons2()}
-      </Toolbar>
+      </ToolBarStyled>
     );
   };
 
@@ -126,16 +122,19 @@ export default function Navbar() {
         <Drawer
           open={drawerOpen}
           onClose={handleDrawerClose}
-          anchor='right'
           variant="temporary"
-          classes={{
-            paper: drawerPaper,
+          sx={{
+            width: drawerWidth,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+            }
           }}
           ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
+            keepMounted: true,
+            dir: "rtl" // Better open performance on mobile.
           }}
         >
-          <div className={drawerContainer}>{getDrawerChoices()}</div>
+          <DrawerContainer>{getDrawerChoices()}</DrawerContainer>
         </Drawer>
 
         <div>{femmecubatorLogo}</div>
@@ -163,11 +162,11 @@ export default function Navbar() {
   };
 
   const femmecubatorLogo = (
-    <Typography variant="h6" component="h1" className={logo}>
+    <LogoStyled component="h1" variant="h6">
       <div className="logo">
         <img src={Logo} alt="Logo" title="Logo" />
       </div>
-    </Typography>
+    </LogoStyled>
   );
 
   const getMenuButtons2 = () => {
@@ -205,8 +204,8 @@ export default function Navbar() {
     });
   }
   return (
-    <AppBar className={header}>
+    <HeaderStyled>
       {mobileView ? displayMobile() : displayDesktop()}
-    </AppBar>
+    </HeaderStyled>
   );
 }
